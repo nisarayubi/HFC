@@ -1,0 +1,34 @@
+import math
+from scipy.stats import norm
+# Given values
+face_value = 1000  # Face value of the bond
+coupon_rate = 0.03  # Coupon rate
+risk_free_rate = 0.02  # Discount rate or risk-free rate
+n = 5  # Number of periods or years until maturity
+
+# Calculate the present value of future coupon payments
+C = coupon_rate * face_value  # Annual coupon payment
+PV_coupon_payments = C / risk_free_rate * (1 - (1 + risk_free_rate)**-n)
+
+# Calculate the present value of the bond's face value upon maturity
+PV_face_value = face_value / (1 + risk_free_rate)**n
+
+# Sum the present values to find the bond's value without the conversion feature
+bond_value = PV_coupon_payments + PV_face_value
+print(f"bond_value = {bond_value}")
+
+# Given values for option valuation
+S = 45  # Current stock price 
+sigma = 0.3  # Volatility of the stock
+X = face_value / 20  # Strike price (conversion price)
+
+# Calculate d1 and d2
+d1 = (math.log(S / X) + (risk_free_rate + (sigma**2) / 2) * n) / (sigma * math.sqrt(n))
+d2 = d1 - sigma * math.sqrt(n)
+
+# Calculate call option price using Black-Scholes formula
+call_option_value = S * norm.cdf(d1) - X * math.exp(-risk_free_rate * n) * norm.cdf(d2)
+print(f"call_option_value per share = {call_option_value}")
+
+convertible_bond_value = bond_value + call_option_value * 20 # number of shares
+print(f"convertible_bond_value = {convertible_bond_value}")
